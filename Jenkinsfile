@@ -1,24 +1,36 @@
 pipeline {
     agent any
 
+    environment {
+        NVM_DIR = "${WORKSPACE}/.nvm"
+    }
+
     stages {
         stage('Prepare') {
             steps {
                 sh '''
-                    curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-                    sudo yum install -y nodejs
+                    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+                    export NVM_DIR="$WORKSPACE/.nvm"
+                    source "$NVM_DIR/nvm.sh"
+                    nvm install 22
                     node -v
                 '''
             }
         }
+
         stage('Build') {
             steps {
-                sh 'npm -v'
+                sh '''
+                    export NVM_DIR="$WORKSPACE/.nvm"
+                    source "$NVM_DIR/nvm.sh"
+                    npm -v
+                '''
             }
         }
+
         stage('Test') {
             steps {
-                echo "JENKINS_URL: ${env.JENKINS_URL}"
+                sh 'echo $JENKINS_URL'
             }
         }
     }
