@@ -9,9 +9,10 @@ pipeline {
         stage('Prepare') {
             steps {
                 sh '''
+                    mkdir -p "$NVM_DIR"
                     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
                     export NVM_DIR="$WORKSPACE/.nvm"
-                    source "$NVM_DIR/nvm.sh"
+                    [ -s "$NVM_DIR/nvm.sh" ] && \\. "$NVM_DIR/nvm.sh"
                     nvm install 22
                     node -v
                 '''
@@ -22,7 +23,7 @@ pipeline {
             steps {
                 sh '''
                     export NVM_DIR="$WORKSPACE/.nvm"
-                    source "$NVM_DIR/nvm.sh"
+                    [ -s "$NVM_DIR/nvm.sh" ] && \\. "$NVM_DIR/nvm.sh"
                     npm -v
                 '''
             }
